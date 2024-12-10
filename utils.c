@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/10 12:17:25 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/10 13:43:04 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ long	get_time(t_table *table)
 	struct timeval	now;
 	long			time;
 	
-	if (gettimeofday(&time, NULL) != 0)
+	if (gettimeofday(&now, NULL) != 0)
 		err_clean_bye(table, "gettimeofday() failure");
 	time = (now.tv_sec * 1000) + (now.tv_usec / 1000);
 	return (time);	
