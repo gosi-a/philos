@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 13:32:01 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 12:12:36 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 12:30:41 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,24 @@ void	*go(void *arg)
 	table = philo->table;
 	if (table->philos_n == 1)
 		one_and_only(philo);
+	else
+	{
+		if (philo->id % 2 != 0)
+			ft_sleep(table, 200, philo->id);
+		philo->time_last_meal = get_time(table);
+		pthread_mutex_lock(philo->right_f);
+		print_state(table, get_time_stamp(table), philo->id, FORK);
+		pthread_mutex_lock(philo->left_f);
+		print_state(table, get_time_stamp(table), philo->id, FORK);
+		print_state(table, get_time_stamp(table), philo->id, EAT);
+		ft_sleep(table, table->tt_eat, philo->id);
+		philo->time_last_meal = get_time(table);
+		pthread_mutex_unlock(philo->right_f);
+		pthread_mutex_unlock(philo->left_f);
+		print_state(table, get_time_stamp(table), philo->id, SLEEP);
+		ft_sleep(table, get_time_stamp(table), philo->id);
+		print_state(table, get_time_stamp(table), philo->id, THINK);
+	}
 	return (NULL);
 }
 
