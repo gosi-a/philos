@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/12 08:34:27 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 12:29:07 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 13:21:48 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,13 @@ long	get_time(t_table *table)
 	return (time);
 }
 
-void	ft_sleep(t_table *table, long time, int philo_id)
+void	ft_sleep(t_table *table, long time_len, int philo_id)
 {
 	long	now;
 	long	t_of_death;
 
 	now = get_time(table);
-	while (get_time(table) - now < time)
+	while (get_time(table) - now < time_len)
 	{
 		if (get_time(table) - table->philo->time_last_meal >= table->tt_die)
 		{

@@ -6,15 +6,23 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 12:07:37 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 13:29:54 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/// @brief makes sure that all threads start together (no barrier allowed)
+/// @param table 
+void	thread_synch(t_table *table)
+{
+	pthread_mutex_lock(&table->start_m);
+	pthread_mutex_unlock(&table->start_m);
+}
+
 /// @brief checks safely if philo bool is set to true
 /// @param table 
-/// @return 
+/// @return 1 if dead is true 0 if dead is false
 int	dead_check(t_table *table)
 {
 	int	check;
@@ -69,21 +77,26 @@ int	ft_strlen(char *str)
 	return (len);
 }
 
-void	print_state(t_table *table, long time, int id, int flag)
+/// @brief locks the mutex & prints the current philo's state
+/// @param table 
+/// @param time_stamp from get_time_stamp() 
+/// @param id philo's id
+/// @param flag FORK EAT SLEEP THINK or DIE (with DIE it sets dead to true)
+void	print_state(t_table *table, long time_stamp, int id, int flag)
 {
 	pthread_mutex_lock(&table->print_m);
 	if (flag == FORK && dead_check(table) == 0)
-		printf("%zu %d has taken a fork\n", time, id);
+		printf(GREEN"%zu"R"\t%d has taken a fork\n", time_stamp, id);
 	else if (flag == EAT && dead_check(table) == 0)
-		printf("%zu %d is eating\n", time, id);
+		printf(GREEN"%zu"R"\t%d is eating\n", time_stamp, id);
 	else if (flag == SLEEP && dead_check(table) == 0)
-		printf("%zu %d is sleeping\n", time, id);
+		printf(GREEN"%zu"R"\t%d is sleeping\n", time_stamp, id);
 	else if (flag == THINK && dead_check(table) == 0)
-		printf("%zu %d is thinking\n", time, id);
+		printf(GREEN"%zu"R"\t%d is thinking\n", time_stamp, id);
 	else if (flag == DIE && dead_check(table) == 0)
 	{
 		table->dead = true;
-		printf("%zu %d died\n", time, id);
+		printf(GREEN"%zu"R"\t%d "RED"died\n"R, time_stamp, id);
 	}
 	pthread_mutex_unlock(&table->print_m);
 }

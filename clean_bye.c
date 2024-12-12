@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 07:40:47 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 12:03:16 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 13:11:38 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	mutex_cleanup(t_table *table)
 	i = 0;
 	pthread_mutex_destroy(&table->dead_m);
 	pthread_mutex_destroy(&table->print_m);
+	pthread_mutex_destroy(&table->start_m);
 	while (i < table->philos_n)
 	{
 		pthread_mutex_destroy(&table->forks[i]);

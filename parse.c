@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 08:05:48 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 12:18:56 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 13:24:46 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,4 @@ void	parse(t_table *table, char **argv, int argc)
 		table->meals = get_value(argv[5]);
 	else
 		table->meals = -1;
-	print_table(table);		// <--to delete
 }

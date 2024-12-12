@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 12:11:01 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 13:29:58 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@
 # define SLEEP 2
 # define THINK 3
 # define DIE 4
+
+# define R "\033[0m"
+# define RED "\033[31;1m"
+# define GREEN "\033[38;5;82m"
 
 struct	s_table;
 
@@ -53,6 +57,7 @@ typedef struct	s_table
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	dead_m;
 	pthread_mutex_t	print_m;
+	pthread_mutex_t	start_m;
 }	t_table;
 
 void	init(t_table *table, char **argv, int argc);
@@ -69,13 +74,14 @@ void	clean_bye(t_table *table);
 			/*time*/
 long	get_time_stamp(t_table *table);
 long	get_time(t_table *table);
-void	ft_sleep(t_table *table, long time, int philo_id);
+void	ft_sleep(t_table *table, long time_len, int philo_id);
 
 			/*utils*/
 int		ft_strlen(char *str);
 char	*ft_strjoin(char *str1, char *str2);
-void	print_state(t_table *table, long time, int id, int flag);
+void	print_state(t_table *table, long time_stamp, int id, int flag);
 int		dead_check(t_table *table);
+void	thread_synch(t_table *table);
 
 			/*to delete*/
 void	print_table(t_table *table);

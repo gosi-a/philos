@@ -6,13 +6,13 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 13:32:01 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 12:30:41 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 13:27:36 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	one_and_only(t_philo *philo)
+static void	one_and_only(t_philo *philo)
 {
 	t_table	*table;
 
@@ -31,6 +31,31 @@ void	one_and_only(t_philo *philo)
 	pthread_mutex_unlock(philo->right_f);
 }
 
+static void	more_and_more(t_philo *philo, t_table *table)
+{
+	thread_synch(table);
+	while (dead_check(table) == 0)
+	{
+		if (philo->id % 2 != 0)
+				ft_sleep(table, 200, philo->id);
+		philo->time_last_meal = get_time(table);
+		pthread_mutex_lock(philo->right_f);
+		print_state(table, get_time_stamp(table), philo->id, FORK);
+		pthread_mutex_lock(philo->left_f);
+		print_state(table, get_time_stamp(table), philo->id, FORK);
+		print_state(table, get_time_stamp(table), philo->id, EAT);
+		if (table->meals != -1)
+			philo->meals_eaten += 1;
+		ft_sleep(table, table->tt_eat, philo->id);
+		philo->time_last_meal = get_time(table);
+		pthread_mutex_unlock(philo->right_f);
+		pthread_mutex_unlock(philo->left_f);
+		print_state(table, get_time_stamp(table), philo->id, SLEEP);
+		ft_sleep(table, get_time_stamp(table), philo->id);
+		print_state(table, get_time_stamp(table), philo->id, THINK);
+	}
+}
+
 void	*go(void *arg)
 {
 	t_philo	*philo;
@@ -41,23 +66,7 @@ void	*go(void *arg)
 	if (table->philos_n == 1)
 		one_and_only(philo);
 	else
-	{
-		if (philo->id % 2 != 0)
-			ft_sleep(table, 200, philo->id);
-		philo->time_last_meal = get_time(table);
-		pthread_mutex_lock(philo->right_f);
-		print_state(table, get_time_stamp(table), philo->id, FORK);
-		pthread_mutex_lock(philo->left_f);
-		print_state(table, get_time_stamp(table), philo->id, FORK);
-		print_state(table, get_time_stamp(table), philo->id, EAT);
-		ft_sleep(table, table->tt_eat, philo->id);
-		philo->time_last_meal = get_time(table);
-		pthread_mutex_unlock(philo->right_f);
-		pthread_mutex_unlock(philo->left_f);
-		print_state(table, get_time_stamp(table), philo->id, SLEEP);
-		ft_sleep(table, get_time_stamp(table), philo->id);
-		print_state(table, get_time_stamp(table), philo->id, THINK);
-	}
+		more_and_more(philo, table);
 	return (NULL);
 }
 
@@ -68,6 +77,7 @@ void	make_philos(t_table *table)
 
 	i = 0;
 	table->started = get_time(table);
+	pthread_mutex_lock(&table->start_m);
 	while (i < table->philos_n)
 	{
 		chck = pthread_create(&table->philo[i].th, NULL, &go, \
@@ -76,6 +86,7 @@ void	make_philos(t_table *table)
 			err_clean_bye(table, "pthread_create() failure: philos\n", i);
 		i++;
 	}
+	pthread_mutex_unlock(&table->start_m);
 }
 
 void	join_philos(t_table *table)
