@@ -6,7 +6,7 @@
 #    By: mstencel <mstencel@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2024/12/03 13:22:25 by mstencel      #+#    #+#                  #
-#    Updated: 2024/12/10 13:32:12 by mstencel      ########   odam.nl          #
+#    Updated: 2024/12/12 08:35:00 by mstencel      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRC_FILES = main.c\
 			init.c\
 			parse.c\
 			philos.c\
+			time.c\
 			utils.c
 
 OBJ_PATH = obj

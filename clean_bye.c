@@ -6,52 +6,24 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 07:40:47 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/10 12:08:00 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 09:09:49 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/*
-	typedef struct	s_philo
+void	mutex_cleanup(t_table *table)
 {
-	int				id;
-	int				meals_eaten;
-	long			time_last_meal;
-	pthread_mutex_t	*left_f;
-	pthread_mutex_t	*right_f;
-	t_table			*table;
-}	t_philo;
+	int	i;
 
-typedef	struct s_table
-{
-	bool			dead;
-	int				meals;
-	int				philos_num;
-	int				tt_die;
-	int				tt_eat;
-	int				tt_sleep;
-	long			started;
-	pthread_t		*forks;
-	pthread_t		*philo;
-	pthread_mutex_t	began_m;
-	pthread_mutex_t	dead_m;
-	pthread_mutex_t	meal_m;
-	pthread_mutex_t	print_m;
-}	t_table;
-*/
-
-static int	ft_strlen(char *str)
-{
-	int	len;
-	
-	len = 0;
-	if (str[len])
+	i = 0;
+	pthread_mutex_destroy(&table->print_m);
+	while (i < table->philos_n)
 	{
-		while (str[len])
-			len++;
+		pthread_mutex_destroy(&table->forks[i]);
+		i++;
 	}
-	return (len);
+	free(table->forks);
 }
 
 void	clean_bye(t_table *table)
@@ -60,38 +32,43 @@ void	clean_bye(t_table *table)
 	free(table->philo);
 }
 
-void	mutex_cleanup(t_table *table)
-{
-	int	i;
-
-	i = 0;
-	pthread_mutex_destroy(&table->began_m);
-	pthread_mutex_destroy(&table->dead_m);
-	pthread_mutex_destroy(&table->meal_m);
-	pthread_mutex_destroy(&table->print_m);
-	while (i < table->philos_num)
-	{
-		pthread_mutex_destroy(&table->forks[i]);
-		i++;
-	}
-	free(table->forks);
-}
-
 void	err_bye(char *str)
 {
-	write(2, "\033[1;31mError: \033[0m", 19);
-	write(2, str, ft_strlen(str));
-	write(2, "\n", 1);
+	char	*err;
+
+	err = ft_strjoin("\033[1;31mError: \033[0m", str);
+	if (!err)
+	{
+		write(2, "\033[1;31mError:\033[0m err_bye: ft_strjoin()\n", 31);
+		exit (1);
+	}
+	write(2, err, ft_strlen(err));
+	free(err);
 	exit (1);
 }
 
-void	err_clean_bye(t_table *table, char *str)
+void	err_clean_bye(t_table *table, char *str, int i)
 {
+	char	*err;
+
+	if (i != 0)
+	{
+		while (i >= 0)
+		{
+			pthread_join(table->philo[i].th, NULL);
+			i--;
+		}
+	}
 	mutex_cleanup(table);
 	if (table->philo != NULL)
 		free(table->philo);
-	write(2, "\033[1;31mError: \033[0m", 19);
-	write(2, str, ft_strlen(str));
-	write(2, "\n", 1);
+	err = ft_strjoin("\033[1;31mError: \033[0m", str);
+	if (!err)
+	{
+		write(2, "\033[1;31mError:\033[0m err_clean_bye: ft_strjoin()\n", 31);
+		exit (1);
+	}
+	write(2, err, ft_strlen(err));
+	free(err);
 	exit (1);
 }
