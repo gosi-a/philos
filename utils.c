@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 08:46:31 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 09:14:08 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 char	*ft_strjoin(char *str1, char *str2)
 {
-	char 	*new_str;
+	char	*new_str;
 	int		i;
 	int		j;
 
@@ -44,7 +44,7 @@ char	*ft_strjoin(char *str1, char *str2)
 int	ft_strlen(char *str)
 {
 	int	len;
-	
+
 	len = 0;
 	if (str[len])
 	{
@@ -73,14 +73,12 @@ void	print_state(t_table *table, long time, int id, int flag)
 	pthread_mutex_unlock(&table->print_m);
 }
 
-
-
 			/*to delete*/
 void	print_table(t_table *table)
 {
 	printf("philos: %d\t", table->philos_n);
 	printf("die: %d\t", table->tt_die);
 	printf("eat: %d\t", table->tt_eat);
-	printf("sleep: %d\t",table->tt_sleep);
-	printf("meals: %d\n",table->meals);
+	printf("sleep: %d\t", table->tt_sleep);
+	printf("meals: %d\n", table->meals);
 }

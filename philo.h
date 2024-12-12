@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 09:05:44 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 09:14:55 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct	s_philo
 	struct s_table	*table;
 }	t_philo;
 
-typedef	struct s_table
+typedef struct	s_table
 {
 	bool			dead;
 	int				meals;
@@ -55,7 +55,7 @@ typedef	struct s_table
 }	t_table;
 
 void	init(t_table *table, char **argv, int argc);
-void	parse(t_table *table, char **argv,int argc);
+void	parse(t_table *table, char **argv, int argc);
 
 			/*error & cleaning*/
 void	err_bye(char *str);
@@ -64,9 +64,9 @@ void	mutex_cleanup(t_table *table);
 void	clean_bye(t_table *table);
 
 			/*time*/
-long	get_time_stamp(t_table * table);
+long	get_time_stamp(t_table *table);
 long	get_time(t_table *table);
-void	ft_sleep(t_table *table, long time, int	philo_id);
+void	ft_sleep(t_table *table, long time, int philo_id);
 
 			/*utils*/
 int		ft_strlen(char *str);

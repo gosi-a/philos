@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 08:05:48 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 08:35:19 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 09:13:19 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ static long	ft_atol(char *str, int j)
 
 static int	get_value(char *str)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	long	value;
-	
+
 	i = 0;
 	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 		i++;
@@ -56,7 +56,7 @@ static int	get_value(char *str)
 	return ((int)value);
 }
 
-void	parse(t_table *table, char **argv,int argc)
+void	parse(t_table *table, char **argv, int argc)
 {
 	table->philos_n = get_value(argv[1]);
 	if (table->philos_n > 200 || table->philos_n == 0)

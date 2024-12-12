@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 08:58:50 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 09:12:52 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 int	main(int argc, char *argv[])
 {
-	t_table table;
+	t_table	table;
+
 	if (argc < 5 || argc > 6)
 	{
 		write(2, "\033[1;31mError: \033[0m", 18);
