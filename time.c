@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/12 08:34:27 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 09:15:52 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 12:01:14 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,10 @@ void	ft_sleep(t_table *table, long time, int philo_id)
 		{
 			t_of_death = get_time_stamp(table);
 			print_state(table, t_of_death, philo_id, DIE);
-			//it should join the threads, clean the memory & exit
+			break ;
 		}
 		if (table->dead == true)
-			;
-			//it should join the threads, clean the memory & exit
+			break ;
 		usleep(100);
 	}
 }

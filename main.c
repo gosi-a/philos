@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 09:12:52 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 12:11:17 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ int	main(int argc, char *argv[])
 		return (1);
 	}
 	init(&table, argv, argc);
+	make_philos(&table);
+	join_philos(&table);
 	clean_bye(&table);
 	return (0);
 }

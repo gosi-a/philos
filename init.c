@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 08:15:38 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 08:32:54 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 12:02:54 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static void	destroy_failed_mutex(t_table *table, int i)
 {
+	pthread_mutex_destroy(&table->dead_m);
 	pthread_mutex_destroy(&table->print_m);
 	while (i >= 0)
 	{
@@ -73,6 +74,7 @@ void	init(t_table *table, char **argv, int argc)
 	parse(table, argv, argc);
 	table->dead = false;
 	table->started = 0;
+	table->dead_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	table->print_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	init_forks(table);
 	init_philos(table);

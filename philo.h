@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 09:14:55 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 12:11:01 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,14 @@ typedef struct	s_table
 	long			started;
 	t_philo			*philo;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	dead_m;
 	pthread_mutex_t	print_m;
 }	t_table;
 
 void	init(t_table *table, char **argv, int argc);
 void	parse(t_table *table, char **argv, int argc);
+void	make_philos(t_table *table);
+void	join_philos(t_table *table);
 
 			/*error & cleaning*/
 void	err_bye(char *str);
@@ -72,6 +75,7 @@ void	ft_sleep(t_table *table, long time, int philo_id);
 int		ft_strlen(char *str);
 char	*ft_strjoin(char *str1, char *str2);
 void	print_state(t_table *table, long time, int id, int flag);
+int		dead_check(t_table *table);
 
 			/*to delete*/
 void	print_table(t_table *table);

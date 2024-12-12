@@ -6,11 +6,26 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 09:14:08 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/12 12:07:37 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+/// @brief checks safely if philo bool is set to true
+/// @param table 
+/// @return 
+int	dead_check(t_table *table)
+{
+	int	check;
+	
+	check = 0;
+	pthread_mutex_lock(&table->dead_m);
+	if (table->dead == true)
+		check = 1;
+	pthread_mutex_unlock(&table->dead_m);
+	return (check);
+}
 
 char	*ft_strjoin(char *str1, char *str2)
 {
@@ -57,15 +72,15 @@ int	ft_strlen(char *str)
 void	print_state(t_table *table, long time, int id, int flag)
 {
 	pthread_mutex_lock(&table->print_m);
-	if (flag == FORK && table->dead == false)
+	if (flag == FORK && dead_check(table) == 0)
 		printf("%zu %d has taken a fork\n", time, id);
-	else if (flag == EAT && table->dead == false)
+	else if (flag == EAT && dead_check(table) == 0)
 		printf("%zu %d is eating\n", time, id);
-	else if (flag == SLEEP && table->dead == false)
+	else if (flag == SLEEP && dead_check(table) == 0)
 		printf("%zu %d is sleeping\n", time, id);
-	else if (flag == THINK && table->dead == false)
+	else if (flag == THINK && dead_check(table) == 0)
 		printf("%zu %d is thinking\n", time, id);
-	else if (flag == DIE && table->dead == false)
+	else if (flag == DIE && dead_check(table) == 0)
 	{
 		table->dead = true;
 		printf("%zu %d died\n", time, id);
