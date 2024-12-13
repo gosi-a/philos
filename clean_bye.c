@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 07:40:47 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 13:11:38 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 09:05:25 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	mutex_cleanup(t_table *table)
 	while (i < table->philos_n)
 	{
 		pthread_mutex_destroy(&table->forks[i]);
+		pthread_mutex_destroy(&table->philo[i].full_m);
+		pthread_mutex_destroy(&table->philo[i].time_last_meal_m);
 		i++;
 	}
 	free(table->forks);
