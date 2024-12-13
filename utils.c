@@ -6,19 +6,19 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 13:24:09 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 14:12:58 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	change_m_value(t_table *table, t_philo *philo, int flag)
+void	change_m_value(t_data *data, t_philo *philo, int flag)
 {
 	if (flag == DEAD_M)
 	{
-		pthread_mutex_lock(&table->dead_m);
-		table->dead = true;
-		pthread_mutex_unlock(&table->dead_m);
+		pthread_mutex_lock(&data->dead_m);
+		data->dead = true;
+		pthread_mutex_unlock(&data->dead_m);
 	}
 	else if (flag == FULL_M)
 	{
@@ -29,30 +29,30 @@ void	change_m_value(t_table *table, t_philo *philo, int flag)
 	else if (flag == TIME_LAST_MEAL_M)
 	{
 		pthread_mutex_lock(&philo->time_last_meal_m);
-		philo->time_last_meal = get_time(table);
+		philo->time_last_meal = get_time(data);
 		pthread_mutex_unlock(&philo->time_last_meal_m);
 	}
 }
 
 /// @brief locks the mutex & prints the current philo's state
-/// @param table data
+/// @param data data
 /// @param time_stamp from get_time_stamp() 
 /// @param id philo's id
 /// @param flag FORK EAT SLEEP THINK or DIE (with DIE it sets dead to true)
-void	print_state(t_table *table, long time_stamp, int id, int flag)
+void	print_state(t_data *data, long time_stamp, int id, int flag)
 {
 	if (flag == DIE)
 	{
-		pthread_mutex_lock(&table->print_m);
-		if (philo_mutex_check(table, &table->philo[id], DEAD_M) == 0)
+		pthread_mutex_lock(&data->print_m);
+		if (philo_mutex_check(data, &data->philo[id], DEAD_M) == 0)
 		{
 			printf(GREEN"%zu"R"\t%d "RED"died\n"R, time_stamp, id);
 		}
-		change_m_value(table, table->philo, DEAD_M);
-		pthread_mutex_unlock(&table->print_m);
+		change_m_value(data, data->philo, DEAD_M);
+		pthread_mutex_unlock(&data->print_m);
 	}
-	pthread_mutex_lock(&table->print_m);
-	if (philo_mutex_check(table, &table->philo[id], DEAD_M) == 0)
+	pthread_mutex_lock(&data->print_m);
+	if (philo_mutex_check(data, &data->philo[id], DEAD_M) == 0)
 	{
 		if (flag == FORK)
 			printf(GREEN"%zu"R"\t%d has taken a fork\n", time_stamp, id);
@@ -63,7 +63,7 @@ void	print_state(t_table *table, long time_stamp, int id, int flag)
 		else if (flag == EAT)
 			printf(GREEN"%zu"R"\t%d is eating\n", time_stamp, id);
 	}
-	pthread_mutex_unlock(&table->print_m);
+	pthread_mutex_unlock(&data->print_m);
 }
 
 char	*ft_strjoin(char *str1, char *str2)

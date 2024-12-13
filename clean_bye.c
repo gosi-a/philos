@@ -6,34 +6,34 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 07:40:47 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 09:05:25 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 14:12:58 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	mutex_cleanup(t_table *table)
+void	mutex_cleanup(t_data *data)
 {
 	int	i;
 
 	i = 0;
-	pthread_mutex_destroy(&table->dead_m);
-	pthread_mutex_destroy(&table->print_m);
-	pthread_mutex_destroy(&table->start_m);
-	while (i < table->philos_n)
+	pthread_mutex_destroy(&data->dead_m);
+	pthread_mutex_destroy(&data->print_m);
+	pthread_mutex_destroy(&data->start_m);
+	while (i < data->philos_n)
 	{
-		pthread_mutex_destroy(&table->forks[i]);
-		pthread_mutex_destroy(&table->philo[i].full_m);
-		pthread_mutex_destroy(&table->philo[i].time_last_meal_m);
+		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->philo[i].full_m);
+		pthread_mutex_destroy(&data->philo[i].time_last_meal_m);
 		i++;
 	}
-	free(table->forks);
+	free(data->forks);
 }
 
-void	clean_bye(t_table *table)
+void	clean_bye(t_data *data)
 {
-	mutex_cleanup(table);
-	free(table->philo);
+	mutex_cleanup(data);
+	free(data->philo);
 }
 
 void	err_bye(char *str)
@@ -51,7 +51,7 @@ void	err_bye(char *str)
 	exit (1);
 }
 
-void	err_clean_bye(t_table *table, char *str, int i)
+void	err_clean_bye(t_data *data, char *str, int i)
 {
 	char	*err;
 
@@ -59,13 +59,13 @@ void	err_clean_bye(t_table *table, char *str, int i)
 	{
 		while (i >= 0)
 		{
-			pthread_join(table->philo[i].th, NULL);
+			pthread_join(data->philo[i].th, NULL);
 			i--;
 		}
 	}
-	mutex_cleanup(table);
-	if (table->philo != NULL)
-		free(table->philo);
+	mutex_cleanup(data);
+	if (data->philo != NULL)
+		free(data->philo);
 	err = ft_strjoin("\033[1;31mError: \033[0m", str);
 	if (!err)
 	{

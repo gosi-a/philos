@@ -6,55 +6,55 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 13:31:18 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 14:12:58 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	make_philos(t_table *table)
+static void	make_philos(t_data *data)
 {
 	int	i;
 
 	i = 0;
-	table->started = get_time(table);
-	pthread_mutex_lock(&table->start_m);
-	while (i < table->philos_n)
+	data->started = get_time(data);
+	pthread_mutex_lock(&data->start_m);
+	while (i < data->philos_n)
 	{
-		if (pthread_create(&table->philo[i].th, NULL, &routine, \
-			(void *)&table->philo[i]) != 0)
+		if (pthread_create(&data->philo[i].th, NULL, &routine, \
+			(void *)&data->philo[i]) != 0)
 		{
-			pthread_mutex_unlock(&table->start_m);
-			err_clean_bye(table, "pthread_create() failure: philos\n", i);
+			pthread_mutex_unlock(&data->start_m);
+			err_clean_bye(data, "pthread_create() failure: philos\n", i);
 		}
 		i++;
 	}
-	pthread_mutex_unlock(&table->start_m);
+	pthread_mutex_unlock(&data->start_m);
 	usleep(2000);
 	while (1)
 	{
-		if (total_check(table) == 1)
+		if (total_check(data) == 1)
 			break ;
 		usleep(100);
 	}
 }
 
-static void	join_philos(t_table *table)
+static void	join_philos(t_data *data)
 {
 	int	i;
 
 	i = 0;
-	while (i < table->philos_n)
+	while (i < data->philos_n)
 	{
-		if (pthread_join(table->philo[i].th, NULL) != 0)
-			err_clean_bye(table, "pthread_create() failure: philos\n", 0);
+		if (pthread_join(data->philo[i].th, NULL) != 0)
+			err_clean_bye(data, "pthread_create() failure: philos\n", 0);
 		i++;
 	}
 }
 
 int	main(int argc, char *argv[])
 {
-	t_table	table;
+	t_data	data;
 
 	if (argc < 5 || argc > 6)
 	{
@@ -64,10 +64,10 @@ int	main(int argc, char *argv[])
 		write(2, "time_to_sleep [number_of_meals]\033[0m\n", 36);
 		return (1);
 	}
-	init(&table, argv, argc);
-	make_philos(&table);
-	join_philos(&table);
-	clean_bye(&table);
+	init(&data, argv, argc);
+	make_philos(&data);
+	join_philos(&data);
+	clean_bye(&data);
 	return (0);
 }
 

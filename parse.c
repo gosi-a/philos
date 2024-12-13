@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 08:05:48 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/12 13:24:46 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 14:12:58 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,16 +56,16 @@ static int	get_value(char *str)
 	return ((int)value);
 }
 
-void	parse(t_table *table, char **argv, int argc)
+void	parse(t_data *data, char **argv, int argc)
 {
-	table->philos_n = get_value(argv[1]);
-	if (table->philos_n > 200 || table->philos_n == 0)
+	data->philos_n = get_value(argv[1]);
+	if (data->philos_n > 200 || data->philos_n == 0)
 		err_bye("invalid input: philosphers range: 1-200\n");
-	table->tt_die = get_value(argv[2]);
-	table->tt_eat = get_value(argv[3]);
-	table->tt_sleep = get_value(argv[4]);
+	data->tt_die = get_value(argv[2]);
+	data->tt_eat = get_value(argv[3]);
+	data->tt_sleep = get_value(argv[4]);
 	if (argc == 6)
-		table->meals = get_value(argv[5]);
+		data->meals = get_value(argv[5]);
 	else
-		table->meals = -1;
+		data->meals = -1;
 }

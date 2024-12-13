@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 12:04:44 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 14:34:55 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@
 # define RED "\033[31;1m"
 # define GREEN "\033[38;5;82m"
 
-struct	s_table;
+struct	s_data;
 
-typedef struct	s_philo
+typedef struct s_philo
 {
 	int				id;
 	int				meals_eaten;
@@ -51,10 +51,10 @@ typedef struct	s_philo
 	pthread_mutex_t	*right_f;
 	pthread_mutex_t	full_m;
 	pthread_mutex_t	time_last_meal_m;
-	struct s_table	*table;
+	struct s_data	*data;
 }	t_philo;
 
-typedef struct	s_table
+typedef struct s_data
 {
 	bool			dead;
 	int				meals;
@@ -68,33 +68,33 @@ typedef struct	s_table
 	pthread_mutex_t	dead_m;
 	pthread_mutex_t	print_m;
 	pthread_mutex_t	start_m;
-}	t_table;
+}	t_data;
 
-void	init(t_table *table, char **argv, int argc);
-void	parse(t_table *table, char **argv, int argc);
+void	init(t_data *data, char **argv, int argc);
+void	parse(t_data *data, char **argv, int argc);
 void	*routine(void *arg);
 
 			/*error & cleaning*/
 void	err_bye(char *str);
-void	err_clean_bye(t_table *table, char *str, int i);
-void	mutex_cleanup(t_table *table);
-void	clean_bye(t_table *table);
+void	err_clean_bye(t_data *data, char *str, int i);
+void	mutex_cleanup(t_data *data);
+void	clean_bye(t_data *data);
 
 			/*time*/
-long	get_time_stamp(t_table *table);
-long	get_time(t_table *table);
-void	ft_sleep(t_table *table, long sleep_time, int id);
-void	thread_synch(t_table *table);
+long	get_time_stamp(t_data *data);
+long	get_time(t_data *data);
+void	ft_sleep(t_data *data, long sleep_time, int id);
+void	thread_synch(t_data *data);
 
 			/*checks*/
-int		total_check(t_table *table);
-int		philo_mutex_check(t_table *table, t_philo *philo, int flag);
+int		total_check(t_data *data);
+int		philo_mutex_check(t_data *data, t_philo *philo, int flag);
 long	philos_mutex_long_check(t_philo *philo);
-void	change_m_value(t_table *table, t_philo *philo, int flag);
+void	change_m_value(t_data *data, t_philo *philo, int flag);
 
 			/*utils*/
 int		ft_strlen(char *str);
 char	*ft_strjoin(char *str1, char *str2);
-void	print_state(t_table *table, long time_stamp, int id, int flag);
+void	print_state(t_data *data, long time_stamp, int id, int flag);
 
 #endif
