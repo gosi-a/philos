@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/13 08:04:39 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 14:37:41 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 15:30:52 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,12 @@ int	philo_mutex_check(t_data *data, t_philo *philo, int flag)
 		check = philo->full;
 		pthread_mutex_unlock(&philo->full_m);
 	}
+	else if (flag == ALL_FULL_M)
+	{
+		pthread_mutex_lock(&data->all_full_m);
+		check = data->all_full;
+		pthread_mutex_unlock(&data->all_full_m);
+	}
 	if (check == false)
 		return (0);
 	return (1);
@@ -46,6 +52,9 @@ long	philos_mutex_long_check(t_philo *philo)
 	return (check);
 }
 
+
+//TODO -> it sets the dead boolean and won't print the last dead - how to go around it?
+// -> added the all_full flag
 static int	full_check(t_data *data)
 {
 	int	i;
@@ -61,7 +70,7 @@ static int	full_check(t_data *data)
 				j++;
 			if (j == data->philos_n)
 			{
-				change_m_value(data, &data->philo[i], DEAD_M);
+				change_m_value(data, &data->philo[i], ALL_FULL_M);
 				return (1);
 			}
 			i++;

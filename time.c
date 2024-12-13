@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/12 08:34:27 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 14:36:59 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 14:49:59 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,10 @@ void	ft_sleep(t_data *data, long sleep_time, int id)
 		&& philo_mutex_check(data, &data->philo[id - 1], DEAD_M) == 0)
 	{
 		if (get_time(data) - last_meal >= data->tt_die)
+		{
+			printf("I should die %d\n", id);
 			print_state(data, get_time_stamp(data), id, DIE);
+		}
 		if (philo_mutex_check(data, &data->philo[id - 1], DEAD_M) == 1)
 			break ;
 		usleep(100);

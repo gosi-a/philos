@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 07:40:47 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 14:12:58 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 15:21:35 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	mutex_cleanup(t_data *data)
 	int	i;
 
 	i = 0;
+	pthread_mutex_destroy(&data->all_full_m);
 	pthread_mutex_destroy(&data->dead_m);
 	pthread_mutex_destroy(&data->print_m);
 	pthread_mutex_destroy(&data->start_m);

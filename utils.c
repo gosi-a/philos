@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 14:12:58 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 15:27:00 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,12 @@ void	change_m_value(t_data *data, t_philo *philo, int flag)
 		philo->time_last_meal = get_time(data);
 		pthread_mutex_unlock(&philo->time_last_meal_m);
 	}
+	else if (flag == ALL_FULL_M)
+	{
+		pthread_mutex_lock(&data->all_full_m);
+		data->all_full = true;
+		pthread_mutex_unlock(&data->all_full_m);
+	}
 }
 
 /// @brief locks the mutex & prints the current philo's state
@@ -43,9 +49,12 @@ void	print_state(t_data *data, long time_stamp, int id, int flag)
 {
 	if (flag == DIE)
 	{
+		printf("in printing?\n");
 		pthread_mutex_lock(&data->print_m);
+		printf("in printing mutex\n");
 		if (philo_mutex_check(data, &data->philo[id], DEAD_M) == 0)
 		{
+			printf("the last check\n");
 			printf(GREEN"%zu"R"\t%d "RED"died\n"R, time_stamp, id);
 		}
 		change_m_value(data, data->philo, DEAD_M);

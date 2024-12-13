@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 14:34:55 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 15:26:03 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # define FULL_M 1
 # define TIME_LAST_MEAL_M 2
 # define DEAD_M 3
+# define ALL_FULL_M 4
 
 # define R "\033[0m"
 # define RED "\033[31;1m"
@@ -56,6 +57,7 @@ typedef struct s_philo
 
 typedef struct s_data
 {
+	bool			all_full;
 	bool			dead;
 	int				meals;
 	int				philos_n;
@@ -65,6 +67,7 @@ typedef struct s_data
 	long			started;
 	t_philo			*philo;
 	pthread_mutex_t	*forks;
+	pthread_mutex_t	all_full_m;
 	pthread_mutex_t	dead_m;
 	pthread_mutex_t	print_m;
 	pthread_mutex_t	start_m;

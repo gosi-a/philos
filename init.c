@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 08:15:38 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 14:36:28 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/13 15:22:18 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 /// @param flag FORK_M, NUM_MEALS_M, TIME_LAST_MEAL_M
 static void	destroy_failed_mutex(t_data *data, int i, int flag)
 {
+	pthread_mutex_destroy(&data->all_full_m);
 	pthread_mutex_destroy(&data->dead_m);
 	pthread_mutex_destroy(&data->print_m);
 	pthread_mutex_destroy(&data->start_m);
@@ -97,8 +98,10 @@ static void	init_forks(t_data *data)
 void	init(t_data *data, char **argv, int argc)
 {
 	parse(data, argv, argc);
+	data->all_full = false;
 	data->dead = false;
 	data->started = 0;
+	data->all_full_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->dead_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->print_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->start_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
