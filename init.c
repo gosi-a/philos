@@ -6,20 +6,18 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 08:15:38 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 15:22:18 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/14 12:11:27 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/// @brief 
-/// @param data 
-/// @param i 
+/// @brief destroys already created mutexes in case of mutex_init() failure
+/// @param i number of already created mutexes
 /// @param flag FORK_M, NUM_MEALS_M, TIME_LAST_MEAL_M
 static void	destroy_failed_mutex(t_data *data, int i, int flag)
 {
-	pthread_mutex_destroy(&data->all_full_m);
-	pthread_mutex_destroy(&data->dead_m);
+	pthread_mutex_destroy(&data->end_m);
 	pthread_mutex_destroy(&data->print_m);
 	pthread_mutex_destroy(&data->start_m);
 	while (i >= 0)
@@ -38,7 +36,8 @@ static void	destroy_failed_mutex(t_data *data, int i, int flag)
 static void	init_philo_mutex(t_data *data, int i)
 {
 	if (pthread_mutex_init(&data->philo[i].full_m, NULL) != 0
-		|| pthread_mutex_init(&data->philo[i].time_last_meal_m, NULL) != 0)
+		|| pthread_mutex_init(&data->philo[i].time_last_meal_m, NULL) != 0
+		|| pthread_mutex_init(&data->philo[i].philo_dead_m, NULL) != 0)
 	{
 		destroy_failed_mutex(data, data->philos_n - 1, FORK_M);
 		destroy_failed_mutex(data, i, FULL_M);
@@ -65,6 +64,7 @@ static void	init_philos(t_data *data)
 		data->philo[i].meals_eaten = 0;
 		data->philo[i].time_last_meal = 0;
 		data->philo[i].full = false;
+		data->philo[i].philo_dead = false;
 		data->philo[i].data = data;
 		data->philo[i].right_f = &data->forks[i];
 		if (i + 1 == data->philos_n)
@@ -98,11 +98,9 @@ static void	init_forks(t_data *data)
 void	init(t_data *data, char **argv, int argc)
 {
 	parse(data, argv, argc);
-	data->all_full = false;
-	data->dead = false;
+	data->end = false;
 	data->started = 0;
-	data->all_full_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
-	data->dead_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+	data->end_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->print_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->start_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	init_forks(data);

@@ -6,19 +6,22 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/14 07:17:41 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/14 12:12:17 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	change_m_value(t_data *data, t_philo *philo, int flag)
+/// @brief sets the value to true or gets the time of the last meal
+/// @param philo 
+/// @param flag END_M FULL_M TIME_LAST_MEAL_M PHILO_DEAD_M
+void	change_m_value(t_philo *philo, int flag)
 {
-	if (flag == DEAD_M)
+	if (flag == END_M)
 	{
-		pthread_mutex_lock(&data->dead_m);
-		data->dead = true;
-		pthread_mutex_unlock(&data->dead_m);
+		pthread_mutex_lock(&philo->data->end_m);
+		philo->data->end = true;
+		pthread_mutex_unlock(&philo->data->end_m);
 	}
 	else if (flag == FULL_M)
 	{
@@ -29,52 +32,48 @@ void	change_m_value(t_data *data, t_philo *philo, int flag)
 	else if (flag == TIME_LAST_MEAL_M)
 	{
 		pthread_mutex_lock(&philo->time_last_meal_m);
-		philo->time_last_meal = get_time(data);
+		philo->time_last_meal = get_time(philo->data);
 		pthread_mutex_unlock(&philo->time_last_meal_m);
 	}
-	else if (flag == ALL_FULL_M)
+	else if (flag == PHILO_DEAD_M)
 	{
-		pthread_mutex_lock(&data->all_full_m);
-		data->all_full = true;
-		pthread_mutex_unlock(&data->all_full_m);
+		pthread_mutex_lock(&philo->philo_dead_m);
+		philo->philo_dead = true;
+		pthread_mutex_unlock(&philo->philo_dead_m);
 	}
 }
 
-// static void	up_the_meal(t_philo *philo)
-// {
-// 	philo->meals_eaten += 1;
-// 	if (philo->meals_eaten == philo->data->meals)
-// 		change_m_value(philo->data, philo, FULL_M);
-// }
-
-/// @brief locks the mutex & prints the current philo's state
-/// @param data data
+/// @brief locks the mutex & prints the current philo's state, 
+//		if dead (flag DIE), updates the philo's death state
+/// @param data data for the mutexes (&norminette o_0 )
 /// @param time_stamp from get_time_stamp() 
-/// @param id philo's id
+/// @param id philo's id for printing
 /// @param flag FORK EAT SLEEP THINK or DIE (with DIE it sets dead to true)
-void	print_state(t_data *data, long time_stamp, int id, int flag)
+void	print_state(t_philo *philo, long time_stamp, int flag)
 {
 	if (flag == DIE)
 	{
-		pthread_mutex_lock(&data->print_m);
-		if (philo_mutex_check(data, &data->philo[id], DEAD_M) == 0)
-			printf(GREEN"%zu"R"\t%d "RED"died\n"R, time_stamp, id);
-		change_m_value(data, data->philo, DEAD_M);
-		pthread_mutex_unlock(&data->print_m);
+		pthread_mutex_lock(&philo->data->print_m);
+		if (philo_mutex_check(philo, PHILO_DEAD_M) == 0
+			&& philo_mutex_check(philo, END_M) == 0)
+			printf(GRN"%zu"R"\t%d "RED"died\n"R, time_stamp, philo->id);
+		change_m_value(philo, PHILO_DEAD_M);
+		pthread_mutex_unlock(&philo->data->print_m);
 	}
-	pthread_mutex_lock(&data->print_m);
-	if (philo_mutex_check(data, &data->philo[id], DEAD_M) == 0)
+	pthread_mutex_lock(&philo->data->print_m);
+	if (philo_mutex_check(philo, END_M) == 0
+		&& philo_mutex_check(philo, PHILO_DEAD_M) == 0)
 	{
 		if (flag == FORK)
-			printf(GREEN"%zu"R"\t%d has taken a fork\n", time_stamp, id);
+			printf(GRN"%zu"R"\t%d has taken a fork\n", time_stamp, philo->id);
 		else if (flag == SLEEP)
-			printf(GREEN"%zu"R"\t%d is sleeping\n", time_stamp, id);
+			printf(GRN"%zu"R"\t%d is sleeping\n", time_stamp, philo->id);
 		else if (flag == THINK)
-			printf(GREEN"%zu"R"\t%d is thinking\n", time_stamp, id);
+			printf(GRN"%zu"R"\t%d is thinking\n", time_stamp, philo->id);
 		else if (flag == EAT)
-			printf(GREEN"%zu"R"\t%d is eating\n", time_stamp, id);
+			printf(GRN"%zu"R"\t%d is eating\n", time_stamp, philo->id);
 	}
-	pthread_mutex_unlock(&data->print_m);
+	pthread_mutex_unlock(&philo->data->print_m);
 }
 
 char	*ft_strjoin(char *str1, char *str2)

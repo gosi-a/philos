@@ -6,17 +6,17 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/12 08:34:27 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/14 07:19:07 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/14 12:12:01 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
 /// @brief makes sure that all threads start together (no barrier allowed)
-void	thread_synch(t_data *data)
+void	thread_synch(t_philo *philo)
 {
-	pthread_mutex_lock(&data->start_m);
-	pthread_mutex_unlock(&data->start_m);
+	pthread_mutex_lock(&philo->data->start_m);
+	pthread_mutex_unlock(&philo->data->start_m);
 }
 
 /// @brief gets the time_stamp needed for printing the state of the philo
@@ -44,19 +44,23 @@ long	get_time(t_data *data)
 /// @param data data
 /// @param time_len length of time philos should sleep/wait
 /// @param philo_id philo's id (in case of death & print)
-void	ft_sleep(t_data *data, long sleep_time, int id)
+void	ft_sleep(t_philo *philo, long sleep_time)
 {
+	int		id;
 	long	now;
 	long	last_meal;
+	t_data	*data;
 
-	last_meal = philos_mutex_long_check(&data->philo[id - 1]);
-	now = get_time(data);
-	while (get_time(data) - now < sleep_time
-		&& philo_mutex_check(data, &data->philo[id - 1], DEAD_M) == 0)
+	id = philo->id;
+	data = philo->data;
+	last_meal = philos_mutex_long_check(philo);
+	now = get_time(philo->data);
+	while (get_time(philo->data) - now < sleep_time
+		&& philo_mutex_check(philo, END_M) == 0)
 	{
-		if (get_time(data) - last_meal >= data->tt_die)
-			print_state(data, get_time_stamp(data), id, DIE);
-		if (philo_mutex_check(data, &data->philo[id - 1], DEAD_M) == 1)
+		if (get_time(philo->data) - last_meal >= philo->data->tt_die)
+			print_state(philo, get_time_stamp(data), DIE);
+		if (philo_mutex_check(philo, END_M) == 1)
 			break ;
 		usleep(100);
 	}

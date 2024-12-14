@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/14 07:18:23 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/14 12:13:55 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,4 +71,4 @@ int	main(int argc, char *argv[])
 	return (0);
 }
 
-// valgrind --tool=helgrind ./philo ...
+// ./philo 5 410 200 200 7		->printing double died
