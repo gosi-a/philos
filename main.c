@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 15:02:19 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/14 07:18:23 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ static void	make_philos(t_data *data)
 	int	i;
 
 	i = 0;
-	printf("meals: %d\n", data->meals);
 	data->started = get_time(data);
 	pthread_mutex_lock(&data->start_m);
 	while (i < data->philos_n)

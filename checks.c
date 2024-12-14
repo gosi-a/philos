@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/13 08:04:39 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/13 15:30:52 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/14 07:20:19 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,13 @@ long	philos_mutex_long_check(t_philo *philo)
 	return (check);
 }
 
-
-//TODO -> it sets the dead boolean and won't print the last dead - how to go around it?
-// -> added the all_full flag
 static int	full_check(t_data *data)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	j = 1;
+	j = 0;
 	if (data->meals != -1)
 	{
 		while (i < data->philos_n)
