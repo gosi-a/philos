@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 08:15:38 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/14 12:11:27 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/16 13:01:01 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,12 @@ static void	destroy_failed_mutex(t_data *data, int i, int flag)
 	free(data->forks);
 }
 
-static void	init_philo_mutex(t_data *data, int i)
+static int	init_philo_mutex(t_data *data, int i)
 {
+	if (i + 1 == data->philos_n)
+			data->philo[i].left_f = &data->forks[0];
+		else
+			data->philo[i].left_f = &data->forks[i + 1];
 	if (pthread_mutex_init(&data->philo[i].full_m, NULL) != 0
 		|| pthread_mutex_init(&data->philo[i].time_last_meal_m, NULL) != 0
 		|| pthread_mutex_init(&data->philo[i].philo_dead_m, NULL) != 0)
@@ -44,10 +48,12 @@ static void	init_philo_mutex(t_data *data, int i)
 		destroy_failed_mutex(data, i, TIME_LAST_MEAL_M);
 		free(data->philo);
 		err_bye("pthread_mutex_init() failure: init_philo_mutex\n");
+		return (-1);
 	}
+	return (0);
 }
 
-static void	init_philos(t_data *data)
+static int	init_philos(t_data *data)
 {
 	int	i;
 
@@ -67,42 +73,49 @@ static void	init_philos(t_data *data)
 		data->philo[i].philo_dead = false;
 		data->philo[i].data = data;
 		data->philo[i].right_f = &data->forks[i];
-		if (i + 1 == data->philos_n)
-			data->philo[i].left_f = &data->forks[0];
-		else
-			data->philo[i].left_f = &data->forks[i + 1];
-		init_philo_mutex(data, i);
+		if (init_philo_mutex(data, i) == -1)
+			return (-1);
 		i++;
 	}
+	return (0);
 }
 
-static void	init_forks(t_data *data)
+static int	init_forks(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->philos_n);
 	if (data->forks == NULL)
+	{
 		err_bye("malloc failure: init_forks\n");
+		return (-1);
+	}
 	while (i < data->philos_n)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
 		{
 			destroy_failed_mutex(data, i, FORK_M);
 			err_bye("pthread_mutex_init() failure: forks\n");
+			return (-1);
 		}
 		i++;
 	}
+	return (0);
 }
 
-void	init(t_data *data, char **argv, int argc)
+int	init(t_data *data, char **argv, int argc)
 {
-	parse(data, argv, argc);
+	if (parse(data, argv, argc) == -1)
+		return (-1);
 	data->end = false;
 	data->started = 0;
 	data->end_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->print_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->start_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
-	init_forks(data);
-	init_philos(data);
+	if (init_forks(data) == -1)
+		return (-1);
+	if (init_philos(data) == -1)
+		return (-1);
+	return (0);
 }

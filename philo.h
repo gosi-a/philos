@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/14 12:12:55 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/16 13:15:10 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # define EAT 1
 # define SLEEP 2
 # define THINK 3
-# define DIE 4
+
 
 /*mutex*/
 # define FORK_M 0
@@ -83,31 +83,33 @@ typedef struct s_data
 	pthread_mutex_t	start_m;
 }	t_data;
 
-void	init(t_data *data, char **argv, int argc);
-void	parse(t_data *data, char **argv, int argc);
+int	init(t_data *data, char **argv, int argc);
+int	parse(t_data *data, char **argv, int argc);
 void	*routine(void *arg);
 
 			/*error & cleaning*/
 void	err_bye(char *str);
-void	err_clean_bye(t_data *data, char *str, int i);
+int	err_clean_bye(t_data *data, char *str, int i);
 void	mutex_cleanup(t_data *data);
 void	clean_bye(t_data *data);
 
 			/*time*/
 long	get_time_stamp(t_data *data);
 long	get_time(t_data *data);
-void	ft_sleep(t_philo *philo, long sleep_time);
-void	thread_synch(t_philo *philo);
+int	ft_sleep(t_philo *philo, long sleep_time);
+void	thread_synch(t_data *data);
 
 			/*checks*/
 int		total_check(t_data *data);
-int		philo_mutex_check(t_philo *philo, int flag);
+int		philo_value_m_check(t_philo *philo, int flag);
 long	philos_mutex_long_check(t_philo *philo);
-void	change_m_value(t_philo *philo, int flag);
+int	is_alive(t_philo *philo);
 
 			/*utils*/
+void	change_m_value(t_philo *philo, int flag);
+int	print_state(t_philo *philo, int flag);
+void	kill_all(t_data *data);
 int		ft_strlen(char *str);
 char	*ft_strjoin(char *str1, char *str2);
-void	print_state(t_philo *philo, long time_stamp, int flag);
 
 #endif

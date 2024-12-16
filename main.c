@@ -6,18 +6,50 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/14 12:13:55 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/16 13:22:47 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	make_philos(t_data *data)
+int	is_alive(t_philo *philo)
+{
+	if (philo_value_m_check(philo, PHILO_DEAD_M) == 1)
+		return (1);
+	pthread_mutex_lock(&philo->time_last_meal_m);
+	if (philo->data->tt_die <= get_time(philo->data) - philo->time_last_meal)
+	{
+		change_m_value(philo, PHILO_DEAD_M);
+		pthread_mutex_unlock(&philo->time_last_meal_m);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->time_last_meal_m);
+	return (0);
+}
+
+static int	time_update(t_data *data)
 {
 	int	i;
 
 	i = 0;
 	data->started = get_time(data);
+	if (data->started == -1)
+		return (-1);
+	while (i < data->philos_n)
+	{
+		pthread_mutex_lock(&data->philo[i].time_last_meal_m);
+		data->philo[i].time_last_meal = data->started;
+		pthread_mutex_unlock(&data->philo[i].time_last_meal_m);
+		i++;
+	}
+	return (0);
+}
+
+static int	make_philos(t_data *data)
+{
+	int	i;
+
+	i = 0;
 	pthread_mutex_lock(&data->start_m);
 	while (i < data->philos_n)
 	{
@@ -26,20 +58,23 @@ static void	make_philos(t_data *data)
 		{
 			pthread_mutex_unlock(&data->start_m);
 			err_clean_bye(data, "pthread_create() failure: philos\n", i);
+			return (-1);
 		}
 		i++;
 	}
+	if (time_update(data) == -1)
+		return (-1);
 	pthread_mutex_unlock(&data->start_m);
-	usleep(2000);
 	while (1)
 	{
 		if (total_check(data) == 1)
 			break ;
-		usleep(100);
+		usleep(50);
 	}
+	return (0);
 }
 
-static void	join_philos(t_data *data)
+static int	join_philos(t_data *data)
 {
 	int	i;
 
@@ -47,9 +82,13 @@ static void	join_philos(t_data *data)
 	while (i < data->philos_n)
 	{
 		if (pthread_join(data->philo[i].th, NULL) != 0)
+		{
 			err_clean_bye(data, "pthread_create() failure: philos\n", 0);
+			return (-1);
+		}
 		i++;
 	}
+	return (0);
 }
 
 int	main(int argc, char *argv[])
@@ -64,9 +103,12 @@ int	main(int argc, char *argv[])
 		write(2, "time_to_sleep [number_of_meals]\033[0m\n", 36);
 		return (1);
 	}
-	init(&data, argv, argc);
-	make_philos(&data);
-	join_philos(&data);
+	if (init(&data, argv, argc) == -1)
+		return (1);
+	if (make_philos(&data) == -1)
+		return (1);
+	if (join_philos(&data) == -1)
+		return (1);
 	clean_bye(&data);
 	return (0);
 }

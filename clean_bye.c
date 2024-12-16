@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 07:40:47 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/14 12:11:10 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/16 12:57:20 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,15 @@ void	err_bye(char *str)
 	if (!err)
 	{
 		write(2, "\033[1;31mError:\033[0m err_bye: ft_strjoin()\n", 31);
-		exit (1);
 	}
-	write(2, err, ft_strlen(err));
-	free(err);
-	exit (1);
+	else
+	{
+		write(2, err, ft_strlen(err));
+		free(err);
+	}
 }
 
-void	err_clean_bye(t_data *data, char *str, int i)
+int	err_clean_bye(t_data *data, char *str, int i)
 {
 	char	*err;
 
@@ -70,9 +71,12 @@ void	err_clean_bye(t_data *data, char *str, int i)
 	if (!err)
 	{
 		write(2, "\033[1;31mError:\033[0m err_clean_bye: ft_strjoin()\n", 31);
-		exit (1);
+		return (-1);
 	}
-	write(2, err, ft_strlen(err));
-	free(err);
-	exit (1);
+	else
+	{
+		write(2, err, ft_strlen(err));
+		free(err);
+	}
+	return (0);
 }
