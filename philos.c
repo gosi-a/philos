@@ -6,23 +6,12 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 13:32:01 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 10:56:06 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 15:19:35 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	one_and_only(t_philo *philo)
-{
-	pthread_mutex_lock(philo->right_f);
-	print_status(philo, "has taken a fork\n");
-	ft_sleep(philo, philo->data->tt_die);
-	pthread_mutex_unlock(philo->right_f);
-}
-
-/// @brief even philos will start eating with their left fork & odd with their
-///		right fork, also checks if philo is dead, it won't be able to eat
-/// @param philo 
 static int	forks(t_philo *philo)
 {
 	if (philo->id % 2 == 0)
@@ -75,9 +64,29 @@ static void	eat(t_philo *philo)
 	}
 }
 
-/// @brief sync of the philos, sets up the start time, if 1 philo only, 
-//		another function, for more, even philos will sleep half of the tt_eat,
-//		they will eat, sleep & think 
+static int	go(t_philo *philo)
+{
+	eat(philo);
+	print_status(philo, "is sleeping\n");
+	if (ft_sleep(philo, philo->data->tt_sleep) == -1)
+		return (-1);
+	print_status(philo, "is thinking\n");
+	if (philo->data->philos_n % 2 != 0)
+		ft_sleep(philo, philo->data->tt_think);
+	if (philo->meals_eaten == philo->data->meals)
+		return (-1);
+	return (0);
+}
+
+static void	one_and_only(t_philo *philo)
+{
+	philo->time_last_meal = philo->data->started;
+	pthread_mutex_lock(philo->right_f);
+	print_status(philo, "has taken a fork\n");
+	ft_sleep(philo, philo->data->tt_die);
+	pthread_mutex_unlock(philo->right_f);
+}
+
 void	*routine(void *arg)
 {
 	t_philo	*philo;
@@ -96,12 +105,8 @@ void	*routine(void *arg)
 		}
 		while (bool_check(philo, PHILO_DEAD_M) == 0)
 		{
-			eat(philo);
-			print_status(philo, "is sleeping\n");
-			if (ft_sleep(philo, philo->data->tt_sleep) == -1)
+			if (go(philo) == -1)
 				break ;
-			print_status(philo, "is thinking\n");
-			ft_sleep(philo, philo->data->tt_think);
 		}
 	}
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 10:08:03 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 15:16:35 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,12 @@ typedef struct s_data
 	pthread_mutex_t	start_m;
 }	t_data;
 
-int	init(t_data *data, char **argv, int argc);
-int	parse(t_data *data, char **argv, int argc);
+int		init(t_data *data, char **argv, int argc);
+int		parse(t_data *data, char **argv, int argc);
 void	*routine(void *arg);
 
 			/*error & cleaning*/
-void	err_bye(char *str);
+int		err_bye(char *str);
 int		err_clean_bye(t_data *data, char *str, int i);
 void	mutex_cleanup(t_data *data);
 void	clean_bye(t_data *data);
@@ -94,10 +94,6 @@ void	monitoring(t_data *data);
 
 			/*printing*/
 void	print_status(t_philo *philo, char *str);
-void	print_fork(t_philo *philo);
-void	print_eat(t_philo *philo);
-void	print_sleep(t_philo *philo);
-void	print_think(t_philo *philo);
 
 			/*utils*/
 int		bool_check(t_philo *philo, int flag);

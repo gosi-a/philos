@@ -6,7 +6,7 @@
 #    By: mstencel <mstencel@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2024/12/03 13:22:25 by mstencel      #+#    #+#                  #
-#    Updated: 2024/12/17 10:54:43 by mstencel      ########   odam.nl          #
+#    Updated: 2024/12/17 14:56:11 by mstencel      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,6 @@ SRC_FILES = main.c\
 			init.c\
 			parse.c\
 			philos.c\
-			print_state.c\
 			time.c\
 			utils.c
 

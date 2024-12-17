@@ -6,29 +6,11 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 10:07:23 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 15:13:45 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-static int	time_update(t_data *data)
-{
-	int	i;
-
-	i = 0;
-	data->started = get_time(data);
-	if (data->started == -1)
-		return (-1);
-	while (i < data->philos_n)
-	{
-		pthread_mutex_lock(&data->philo[i].time_last_meal_m);
-		data->philo[i].time_last_meal = data->started;
-		pthread_mutex_unlock(&data->philo[i].time_last_meal_m);
-		i++;
-	}
-	return (0);
-}
 
 static int	make_philos(t_data *data)
 {
@@ -47,8 +29,7 @@ static int	make_philos(t_data *data)
 		}
 		i++;
 	}
-	if (time_update(data) == -1)
-		return (-1);
+	data->started = get_time(data);
 	pthread_mutex_unlock(&data->start_m);
 	monitoring(data);
 	return (0);
@@ -92,5 +73,3 @@ int	main(int argc, char *argv[])
 	clean_bye(&data);
 	return (0);
 }
-
-// ./philo 5 410 200 200 7		->printing double died

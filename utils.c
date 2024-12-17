@@ -6,11 +6,23 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 08:53:41 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 12:27:11 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	print_status(t_philo *philo, char *str)
+{
+	pthread_mutex_lock(&philo->philo_dead_m);
+	if (philo->philo_dead == false)
+	{
+		pthread_mutex_lock(&philo->data->print_m);
+		printf("%zu\t%d %s", get_time_stamp(philo->data), philo->id, str);
+		pthread_mutex_unlock(&philo->data->print_m);
+	}
+	pthread_mutex_unlock(&philo->philo_dead_m);
+}
 
 /// @brief checks safely if philo's bool is set to true
 /// @return 1 if dead is true 0 if dead is false

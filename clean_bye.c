@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 07:40:47 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 07:23:15 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 14:04:38 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	clean_bye(t_data *data)
 	free(data->philo);
 }
 
-void	err_bye(char *str)
+int	err_bye(char *str)
 {
 	char	*err;
 
@@ -49,6 +49,7 @@ void	err_bye(char *str)
 		write(2, err, ft_strlen(err));
 		free(err);
 	}
+	return (-1);
 }
 
 int	err_clean_bye(t_data *data, char *str, int i)

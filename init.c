@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 08:15:38 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 07:59:19 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 15:17:41 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,9 @@ static int	init_philo_mutex(t_data *data, int i)
 {
 	data->philo[i].right_f = &data->forks[i];
 	if (data->philo[i].id == data->philos_n)
-			data->philo[i].left_f = &data->forks[0];
-		else
-			data->philo[i].left_f = &data->forks[i + 1];
+		data->philo[i].left_f = &data->forks[0];
+	else
+		data->philo[i].left_f = &data->forks[i + 1];
 	if (pthread_mutex_init(&data->philo[i].full_m, NULL) != 0
 		|| pthread_mutex_init(&data->philo[i].time_last_meal_m, NULL) != 0
 		|| pthread_mutex_init(&data->philo[i].philo_dead_m, NULL) != 0)

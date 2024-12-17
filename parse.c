@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 08:05:48 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 10:34:59 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 15:19:00 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,48 +36,56 @@ static int	get_value(char *str)
 	int		j;
 	long	value;
 
+	if (!str || str[0] == '\0')
+		return (err_bye("invalid input: use numbers only\n"));
 	i = 0;
 	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 		i++;
 	if (str[i] == '+')
 		i++;
 	if (str[i] == '-')
-		err_bye("invalid input: use positive values\n");
+		return (err_bye("invalid input: use positive values\n"));
 	j = i;
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
-			err_bye("invalid input: use numbers only\n");
+			return (err_bye("invalid input: use numbers only\n"));
 		i++;
 	}
 	value = ft_atol(str, j);
 	if (value > INT_MAX)
-		err_bye("invalid input: too big number, use integers\n");
+		return (err_bye("invalid input: too big number, use integers\n"));
 	return ((int)value);
+}
+
+static int	get_args(t_data *data, char **argv)
+{
+	data->philos_n = get_value(argv[1]);
+	if (data->philos_n > 200 || data->philos_n <= 0)
+		return (err_bye("invalid input: philosphers range: 1-200\n"));
+	data->tt_die = get_value(argv[2]);
+	if (data->tt_die == -1)
+		return (-1);
+	data->tt_eat = get_value(argv[3]);
+	if (data->tt_eat == -1)
+		return (-1);
+	data->tt_sleep = get_value(argv[4]);
+	if (data->tt_sleep == -1)
+		return (-1);
+	return (0);
 }
 
 int	parse(t_data *data, char **argv, int argc)
 {
-	// int	check;
+	int	think;
 
-	data->philos_n = get_value(argv[1]);
-	if (data->philos_n > 200 || data->philos_n == 0)
-	{
-		err_bye("invalid input: philosphers range: 1-200\n");
+	if (get_args(data, argv) == -1)
 		return (-1);
-	}
-	data->tt_die = get_value(argv[2]);
-	data->tt_eat = get_value(argv[3]);
-	data->tt_sleep = get_value(argv[4]);
-	if (data->philos_n % 2 != 0 && data->tt_sleep < data->tt_eat)
-		data->tt_think = (data->tt_eat - data->tt_sleep) + (data->tt_sleep / 2);
+	think = data->tt_eat * 2 - data->tt_sleep;
+	if (think > 0)
+		data->tt_think = think;
 	else
 		data->tt_think = 0;
-	// check = data->tt_die - (2 * data->tt_eat) - data->tt_sleep;
-	// if (check > 0)
-	// 	data->tt_think = check;
-	// else
-	// 	data->tt_think = 0;
 	if (argc == 6)
 		data->meals = get_value(argv[5]);
 	else
