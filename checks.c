@@ -6,47 +6,39 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/13 08:04:39 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/16 13:18:00 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 10:56:20 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/// @brief checks safely if philo's bool is set to true
-/// @return 1 if dead is true 0 if dead is false
-int	philo_value_m_check(t_philo *philo, int flag)
+static int	is_alive(t_philo *philo)
 {
-	if (flag == FULL_M)
-	{
-		pthread_mutex_lock(&philo->full_m);
-		if (philo->full == true)
-		{
-			pthread_mutex_unlock(&philo->full_m);
-			return (1);
-		}
-		pthread_mutex_unlock(&philo->full_m);
-	}
-	else if (flag == PHILO_DEAD_M)
+	pthread_mutex_lock(&philo->time_last_meal_m);
+	if (philo->data->tt_die <= get_time(philo->data) - philo->time_last_meal)
 	{
 		pthread_mutex_lock(&philo->philo_dead_m);
-		if (philo->philo_dead == true)
-		{
-			pthread_mutex_unlock(&philo->philo_dead_m);
-			return (1);
-		}
+		philo->philo_dead = true;
 		pthread_mutex_unlock(&philo->philo_dead_m);
+		pthread_mutex_unlock(&philo->time_last_meal_m);
+		return (1);
 	}
+	pthread_mutex_unlock(&philo->time_last_meal_m);
 	return (0);
 }
 
-long	philos_mutex_long_check(t_philo *philo)
+static void	kill_all(t_data *data)
 {
-	long	check;
+	int	i;
 
-	pthread_mutex_lock(&philo->time_last_meal_m);
-	check = philo->time_last_meal;
-	pthread_mutex_unlock(&philo->time_last_meal_m);
-	return (check);
+	i = 0;
+	while (i < data->philos_n)
+	{
+		pthread_mutex_lock(&data->philo[i].philo_dead_m);
+		data->philo[i].philo_dead = true;
+		pthread_mutex_unlock(&data->philo[i].philo_dead_m);
+		i++;
+	}
 }
 
 static int	all_full_check(t_data *data)
@@ -60,11 +52,13 @@ static int	all_full_check(t_data *data)
 	{
 		while (i < data->philos_n)
 		{
-			if (philo_value_m_check(&data->philo[i], FULL_M) == 1)
+			if (bool_check(&data->philo[i], FULL_M) == 1)
 				j++;
 			if (j == data->philos_n)
 			{
 				kill_all(data);
+				pthread_mutex_lock(&data->print_m);
+				pthread_mutex_unlock(&data->print_m);
 				return (1);
 			}
 			i++;
@@ -73,34 +67,29 @@ static int	all_full_check(t_data *data)
 	return (0);
 }
 
-static int	time_check(t_data *data)
+void	monitoring(t_data *data)
 {
 	int		i;
 
-	i = 0;
-	while (i < data->philos_n)
+	while (1)
 	{
-		if (is_alive(&data->philo[i]) == 1)
+		i = 0;
+		while (i < data->philos_n)
 		{
-			kill_all(data); //
-			pthread_mutex_lock(&data->print_m);
-			printf(GRN"%zu"R"\t%d "RED"died\n"R, get_time_stamp(data), data->philo[i].id);
-			pthread_mutex_unlock(&data->print_m);
-			return (1);
+			if (is_alive(&data->philo[i]) == 1)
+			{
+				kill_all(data);
+				pthread_mutex_lock(&data->print_m);
+				printf("%zu\t%d died\n", \
+					get_time_stamp(data), data->philo[i].id);
+				pthread_mutex_unlock(&data->print_m);
+				return ;
+			}
+			i++;
 		}
-		i++;
+		if (all_full_check(data) == 1)
+			return (1);
+		usleep (100);
 	}
-	return (0);
-}
-
-int	total_check(t_data *data)
-{
-	if (time_check(data) == 1)
-	{
-		printf("in time_check == 1\n");
-		return (1);
-	}
-	if (all_full_check(data) == 1)
-		return (1);
 	return (0);
 }

@@ -6,26 +6,11 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:58:00 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/16 13:22:47 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 10:07:23 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	is_alive(t_philo *philo)
-{
-	if (philo_value_m_check(philo, PHILO_DEAD_M) == 1)
-		return (1);
-	pthread_mutex_lock(&philo->time_last_meal_m);
-	if (philo->data->tt_die <= get_time(philo->data) - philo->time_last_meal)
-	{
-		change_m_value(philo, PHILO_DEAD_M);
-		pthread_mutex_unlock(&philo->time_last_meal_m);
-		return (1);
-	}
-	pthread_mutex_unlock(&philo->time_last_meal_m);
-	return (0);
-}
 
 static int	time_update(t_data *data)
 {
@@ -65,12 +50,7 @@ static int	make_philos(t_data *data)
 	if (time_update(data) == -1)
 		return (-1);
 	pthread_mutex_unlock(&data->start_m);
-	while (1)
-	{
-		if (total_check(data) == 1)
-			break ;
-		usleep(50);
-	}
+	monitoring(data);
 	return (0);
 }
 

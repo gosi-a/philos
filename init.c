@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 08:15:38 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/16 13:01:01 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 07:59:19 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 /// @param flag FORK_M, NUM_MEALS_M, TIME_LAST_MEAL_M
 static void	destroy_failed_mutex(t_data *data, int i, int flag)
 {
-	pthread_mutex_destroy(&data->end_m);
 	pthread_mutex_destroy(&data->print_m);
 	pthread_mutex_destroy(&data->start_m);
 	while (i >= 0)
@@ -35,7 +34,8 @@ static void	destroy_failed_mutex(t_data *data, int i, int flag)
 
 static int	init_philo_mutex(t_data *data, int i)
 {
-	if (i + 1 == data->philos_n)
+	data->philo[i].right_f = &data->forks[i];
+	if (data->philo[i].id == data->philos_n)
 			data->philo[i].left_f = &data->forks[0];
 		else
 			data->philo[i].left_f = &data->forks[i + 1];
@@ -72,7 +72,6 @@ static int	init_philos(t_data *data)
 		data->philo[i].full = false;
 		data->philo[i].philo_dead = false;
 		data->philo[i].data = data;
-		data->philo[i].right_f = &data->forks[i];
 		if (init_philo_mutex(data, i) == -1)
 			return (-1);
 		i++;
@@ -108,9 +107,7 @@ int	init(t_data *data, char **argv, int argc)
 {
 	if (parse(data, argv, argc) == -1)
 		return (-1);
-	data->end = false;
 	data->started = 0;
-	data->end_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->print_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	data->start_m = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
 	if (init_forks(data) == -1)

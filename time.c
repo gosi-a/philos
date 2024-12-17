@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/12 08:34:27 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/16 13:16:47 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 09:17:12 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	ft_sleep(t_philo *philo, long sleep_time)
 	end = start + sleep_time;
 	while (start < end)
 	{
-		if (is_alive(philo) == 1)
+		if (bool_check(philo, PHILO_DEAD_M) == 1)
 			return (-1);
 		usleep(50);
 		start = get_time(philo->data);

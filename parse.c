@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 08:05:48 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/16 12:55:07 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 10:34:59 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ static int	get_value(char *str)
 
 int	parse(t_data *data, char **argv, int argc)
 {
+	// int	check;
+
 	data->philos_n = get_value(argv[1]);
 	if (data->philos_n > 200 || data->philos_n == 0)
 	{
@@ -67,6 +69,15 @@ int	parse(t_data *data, char **argv, int argc)
 	data->tt_die = get_value(argv[2]);
 	data->tt_eat = get_value(argv[3]);
 	data->tt_sleep = get_value(argv[4]);
+	if (data->philos_n % 2 != 0 && data->tt_sleep < data->tt_eat)
+		data->tt_think = (data->tt_eat - data->tt_sleep) + (data->tt_sleep / 2);
+	else
+		data->tt_think = 0;
+	// check = data->tt_die - (2 * data->tt_eat) - data->tt_sleep;
+	// if (check > 0)
+	// 	data->tt_think = check;
+	// else
+	// 	data->tt_think = 0;
 	if (argc == 6)
 		data->meals = get_value(argv[5]);
 	else

@@ -6,75 +6,37 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/16 13:12:32 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 08:53:41 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	kill_all(t_data *data)
+/// @brief checks safely if philo's bool is set to true
+/// @return 1 if dead is true 0 if dead is false
+int	bool_check(t_philo *philo, int flag)
 {
-	int	i;
-
-	i = 0;
-	while (i < data->philos_n)
-	{
-		change_m_value(&data->philo[i], PHILO_DEAD_M);
-		i++;
-	}
-}
-
-/// @brief sets the value to true or gets the time of the last meal
-/// @param philo 
-/// @param flag END_M FULL_M TIME_LAST_MEAL_M PHILO_DEAD_M
-void	change_m_value(t_philo *philo, int flag)
-{
-	if (flag == PHILO_DEAD_M)
-	{
-		pthread_mutex_lock(&philo->philo_dead_m);
-		philo->philo_dead = true;
-		pthread_mutex_unlock(&philo->philo_dead_m);
-		return ;
-	}
-	else if (flag == TIME_LAST_MEAL_M)
-	{
-		pthread_mutex_lock(&philo->time_last_meal_m);
-		philo->time_last_meal = get_time(philo->data);
-		pthread_mutex_unlock(&philo->time_last_meal_m);
-		return ;
-	}
-	else if (flag == FULL_M)
+	if (flag == FULL_M)
 	{
 		pthread_mutex_lock(&philo->full_m);
-		philo->full = true;
+		if (philo->full == true)
+		{
+			pthread_mutex_unlock(&philo->full_m);
+			return (1);
+		}
 		pthread_mutex_unlock(&philo->full_m);
 	}
-}
-
-/// @brief locks the mutex & prints the current philo's state, 
-//		if dead (flag DIE), updates the philo's death state
-/// @param data data for the mutexes (&norminette o_0 )
-/// @param time_stamp from get_time_stamp() 
-/// @param id philo's id for printing
-/// @param flag FORK EAT SLEEP THINK
-int	print_state(t_philo *philo, int flag)
-{
-	pthread_mutex_lock(&philo->data->print_m);
-	if (is_alive(philo) == 0)
+	else if (flag == PHILO_DEAD_M)
 	{
-		if (flag == FORK)
-			printf(GRN"%zu"R"\t%d has taken a fork\n", get_time_stamp(philo->data), philo->id);
-		else if (flag == SLEEP)
-			printf(GRN"%zu"R"\t%d is sleeping\n", get_time_stamp(philo->data), philo->id);
-		else if (flag == THINK)
-			printf(GRN"%zu"R"\t%d is thinking\n", get_time_stamp(philo->data), philo->id);
-		else if (flag == EAT)
-			printf(GRN"%zu"R"\t%d is eating\n", get_time_stamp(philo->data), philo->id);
-		pthread_mutex_unlock(&philo->data->print_m);
-		return (0);
+		pthread_mutex_lock(&philo->philo_dead_m);
+		if (philo->philo_dead == true)
+		{
+			pthread_mutex_unlock(&philo->philo_dead_m);
+			return (1);
+		}
+		pthread_mutex_unlock(&philo->philo_dead_m);
 	}
-	pthread_mutex_unlock(&philo->data->print_m);
-	return (-1);
+	return (0);
 }
 
 char	*ft_strjoin(char *str1, char *str2)

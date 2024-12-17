@@ -6,19 +6,18 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 13:32:01 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/16 13:35:13 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/17 10:56:06 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static int	one_and_only(t_philo *philo)
+static void	one_and_only(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_f);
-	print_state(philo, FORK);
+	print_status(philo, "has taken a fork\n");
 	ft_sleep(philo, philo->data->tt_die);
 	pthread_mutex_unlock(philo->right_f);
-	return (0);
 }
 
 /// @brief even philos will start eating with their left fork & odd with their
@@ -29,92 +28,56 @@ static int	forks(t_philo *philo)
 	if (philo->id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->left_f);
-		print_state(philo, FORK);
-		if (is_alive(philo) == 1)
+		print_status(philo, "has taken a fork\n");
+		if (bool_check(philo, PHILO_DEAD_M) == 1)
 		{
 			pthread_mutex_unlock(philo->left_f);
 			return (1);
 		}
 		pthread_mutex_lock(philo->right_f);
-		print_state(philo, FORK);
+		print_status(philo, "has taken a fork\n");
 	}
 	else
 	{
 		pthread_mutex_lock(philo->right_f);
-		print_state(philo, FORK);
-		if (is_alive(philo) == 1)
+		print_status(philo, "has taken a fork\n");
+		if (bool_check(philo, PHILO_DEAD_M) == 1)
 		{
 			pthread_mutex_unlock(philo->right_f);
 			return (1);
 		}
 		pthread_mutex_lock(philo->left_f);
-		print_state(philo, FORK);
+		print_status(philo, "has taken a fork\n");
 	}
 	return (0);
 }
 
-static int	eat(t_philo *philo)
+static void	eat(t_philo *philo)
 {
-	// if (is_alive(philo) == 1)
-	// 	return (-1);
-	printf("%d is going to eat\n", philo->id);
 	if (forks(philo) == 1)
-		return (-1);
-	if (print_state(philo, EAT) == -1)
-		return (-1);
-	change_m_value(philo, TIME_LAST_MEAL_M);
+		return ;
+	print_status(philo, "is eating\n");
+	pthread_mutex_lock(&philo->time_last_meal_m);
+	philo->time_last_meal = get_time(philo->data);
+	pthread_mutex_unlock(&philo->time_last_meal_m);
 	philo->meals_eaten += 1;
-	if (ft_sleep(philo, philo->data->tt_eat) == -1)
-	{
-		pthread_mutex_unlock(philo->left_f);
-		pthread_mutex_unlock(philo->right_f);
-		return (-1);
-	}
+	ft_sleep(philo, philo->data->tt_eat);
 	pthread_mutex_unlock(philo->left_f);
 	pthread_mutex_unlock(philo->right_f);
-	if (is_alive(philo) == 1)
-		return (-1);
-	if (philo->data->meals != -1)
+	if (philo->data->meals != -1 && bool_check(philo, PHILO_DEAD_M) == 0)
 	{
-		if (philo->meals_eaten == philo->data->meals
-			&& is_alive(philo) == 0)
-			change_m_value(philo, FULL_M);
+		if (philo->meals_eaten == philo->data->meals)
+		{
+			pthread_mutex_lock(&philo->full_m);
+			philo->full = true;
+			pthread_mutex_unlock(&philo->full_m);
+		}
 	}
-	return (0);
-}
-
-static int	more_and_more(t_philo *philo)
-{
-	// long	think_time;
-
-	while (is_alive(philo) == 0)
-	{
-		if (eat(philo) == -1)
-			return (-1);
-		if (is_alive(philo) == 1)
-			return (-1);
-		print_state(philo, SLEEP);
-		if (ft_sleep(philo, philo->data->tt_sleep) == -1)
-			return (-1);
-		if (is_alive(philo) == 1)
-			return (-1);
-		print_state(philo, THINK);
-		// if (philo->data->philos_n % 2 != 0)
-		// {
-		// 	think_time = (philo->data->tt_eat * 2) - philo->data->tt_sleep;
-		// 	if (think_time > 0)
-		// 	{
-		// 		if (ft_sleep(philo, think_time) == -1)
-		// 			return (-1);
-		// 	}
-		// }
-	}
-	return (0);
 }
 
 /// @brief sync of the philos, sets up the start time, if 1 philo only, 
 //		another function, for more, even philos will sleep half of the tt_eat,
-//		they go to the eat, sleep & think part 
+//		they will eat, sleep & think 
 void	*routine(void *arg)
 {
 	t_philo	*philo;
@@ -131,8 +94,15 @@ void	*routine(void *arg)
 			if (ft_sleep(philo, philo->data->tt_eat / 2) == -1)
 				return (NULL);
 		}
-		if (more_and_more(philo) == -1)
-			return (NULL);
+		while (bool_check(philo, PHILO_DEAD_M) == 0)
+		{
+			eat(philo);
+			print_status(philo, "is sleeping\n");
+			if (ft_sleep(philo, philo->data->tt_sleep) == -1)
+				break ;
+			print_status(philo, "is thinking\n");
+			ft_sleep(philo, philo->data->tt_think);
+		}
 	}
 	return (NULL);
 }
