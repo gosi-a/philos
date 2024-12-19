@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 13:32:01 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 15:19:35 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/19 09:05:35 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,12 @@ static void	eat(t_philo *philo)
 	pthread_mutex_lock(&philo->time_last_meal_m);
 	philo->time_last_meal = get_time(philo->data);
 	pthread_mutex_unlock(&philo->time_last_meal_m);
-	philo->meals_eaten += 1;
 	ft_sleep(philo, philo->data->tt_eat);
 	pthread_mutex_unlock(philo->left_f);
 	pthread_mutex_unlock(philo->right_f);
 	if (philo->data->meals != -1 && bool_check(philo, PHILO_DEAD_M) == 0)
 	{
+		philo->meals_eaten += 1;
 		if (philo->meals_eaten == philo->data->meals)
 		{
 			pthread_mutex_lock(&philo->full_m);
@@ -73,8 +73,6 @@ static int	go(t_philo *philo)
 	print_status(philo, "is thinking\n");
 	if (philo->data->philos_n % 2 != 0)
 		ft_sleep(philo, philo->data->tt_think);
-	if (philo->meals_eaten == philo->data->meals)
-		return (-1);
 	return (0);
 }
 
@@ -105,6 +103,8 @@ void	*routine(void *arg)
 		}
 		while (bool_check(philo, PHILO_DEAD_M) == 0)
 		{
+			if (philo->meals_eaten == philo->data->meals)
+				break ;
 			if (go(philo) == -1)
 				break ;
 		}

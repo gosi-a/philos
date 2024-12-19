@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 13:23:50 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 12:27:11 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/19 09:06:00 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	print_status(t_philo *philo, char *str)
 	if (philo->philo_dead == false)
 	{
 		pthread_mutex_lock(&philo->data->print_m);
-		printf("%zu\t%d %s", get_time_stamp(philo->data), philo->id, str);
+		printf("%zu %d %s", get_time_stamp(philo->data), philo->id, str);
 		pthread_mutex_unlock(&philo->data->print_m);
 	}
 	pthread_mutex_unlock(&philo->philo_dead_m);

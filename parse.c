@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 08:05:48 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 15:19:00 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/19 09:14:10 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	get_value(char *str)
 	long	value;
 
 	if (!str || str[0] == '\0')
-		return (err_bye("invalid input: use numbers only\n"));
+		return (err_bye("invalid input: use numbers as an input\n"));
 	i = 0;
 	while ((str[i] >= '\t' && str[i] <= '\r') || str[i] == ' ')
 		i++;
@@ -61,6 +61,8 @@ static int	get_value(char *str)
 static int	get_args(t_data *data, char **argv)
 {
 	data->philos_n = get_value(argv[1]);
+	if (data->philos_n == -1)
+		return (-1);
 	if (data->philos_n > 200 || data->philos_n <= 0)
 		return (err_bye("invalid input: philosphers range: 1-200\n"));
 	data->tt_die = get_value(argv[2]);

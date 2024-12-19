@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/07 06:51:04 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/17 15:16:35 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/19 08:49:28 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 
 # define R "\033[0m"
 # define RED "\033[31;1m"
-// # define GRN "\033[38;5;82m"
+# define GREEN "\033[38;5;82m"
 
 struct	s_data;
 
