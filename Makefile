@@ -6,7 +6,7 @@
 #    By: mstencel <mstencel@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2024/12/03 13:22:25 by mstencel      #+#    #+#                  #
-#    Updated: 2024/12/17 14:56:11 by mstencel      ########   odam.nl          #
+#    Updated: 2024/12/19 10:27:20 by mstencel      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,8 +37,8 @@ HEADER = philo.h
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra
-# CFLAGS += -fsanitize=thread -g
+CFLAGS = -Wall -Werror -Wextra -g
+# CFLAGS += -fsanitize=thread
 THREAD_FLAG = -pthread
 
 RM = rm -f

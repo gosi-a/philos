@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 13:32:01 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/19 09:05:35 by mstencel      ########   odam.nl         */
+/*   Updated: 2024/12/19 10:14:05 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,9 @@ static int	go(t_philo *philo)
 
 static void	one_and_only(t_philo *philo)
 {
+	pthread_mutex_lock(&philo->time_last_meal_m);
 	philo->time_last_meal = philo->data->started;
+	pthread_mutex_unlock(&philo->time_last_meal_m);
 	pthread_mutex_lock(philo->right_f);
 	print_status(philo, "has taken a fork\n");
 	ft_sleep(philo, philo->data->tt_die);
