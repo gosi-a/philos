@@ -6,7 +6,7 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/10 08:05:48 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/19 09:43:57 by mstencel      ########   odam.nl         */
+/*   Updated: 2025/01/16 11:55:50 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	get_value(char *str)
 	return ((int)value);
 }
 
-static int	get_args(t_data *data, char **argv, int	argc)
+static int	get_args(t_data *data, char **argv, int argc)
 {
 	data->philos_n = get_value(argv[1]);
 	if (data->philos_n == -1)
