@@ -6,7 +6,7 @@
 #    By: mstencel <mstencel@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2024/12/03 13:22:25 by mstencel      #+#    #+#                  #
-#    Updated: 2024/12/19 10:27:20 by mstencel      ########   odam.nl          #
+#    Updated: 2025/01/16 11:57:54 by mstencel      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,8 +14,8 @@
 RESET = \033[0m
 FUCHSIA = \033[35m
 B_FUCHSIA = \033[1;35m
-DARK_GREEN = \033[38;5;82m
-GREEN = \033[32m
+DARK_GRN = \033[38;5;82m
+GRN = \033[32m
 BRIGHT_CYAN = \033[96m
 
 NAME = philo
@@ -37,8 +37,8 @@ HEADER = philo.h
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra -g
-# CFLAGS += -fsanitize=thread
+CFLAGS = -Wall -Werror -Wextra
+# CFLAGS += -fsanitize=thread -g
 THREAD_FLAG = -pthread
 
 RM = rm -f
@@ -64,6 +64,6 @@ fclean: clean
 	@echo "$(B_FUCHSIA)$(NAME)$(RESET) $(BRIGHT_CYAN)removed$(RESET)"
 
 re: fclean all
-	@echo "$(GREEN)***all made again***$(RESET)"
+	@echo "$(GRN)***all made again***$(RESET)"
 
 .PHONY: all, clean, fclean, re

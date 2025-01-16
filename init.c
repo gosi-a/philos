@@ -6,15 +6,12 @@
 /*   By: mstencel <mstencel@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2024/12/09 08:15:38 by mstencel      #+#    #+#                 */
-/*   Updated: 2024/12/19 08:27:56 by mstencel      ########   odam.nl         */
+/*   Updated: 2025/01/16 11:57:41 by mstencel      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-/// @brief destroys already created mutexes in case of mutex_init() failure
-/// @param i number of already created mutexes
-/// @param flag FORK_M, NUM_MEALS_M, TIME_LAST_MEAL_M
 static void	destroy_failed_mutex(t_data *data, int i, int flag)
 {
 	pthread_mutex_destroy(&data->print_m);
